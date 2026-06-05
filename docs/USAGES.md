@@ -1,63 +1,63 @@
-# Video Analyzer Usage Guide
+# 视频分析器使用指南
 
-This guide covers all configuration options and command line arguments for the video analyzer tool, along with practical examples for different use cases.
+本指南涵盖视频分析器工具的所有配置选项和命令行参数，以及不同用例的实用示例。
 
-## Table of Contents
-- [Basic Usage](#basic-usage)
-- [Command Line Arguments](#command-line-arguments)
-- [Configuration System](#configuration-system)
-- [Common Use Cases](#common-use-cases)
-- [Advanced Examples](#advanced-examples)
+## 目录
+- [基本用法](#基本用法)
+- [命令行参数](#命令行参数)
+- [配置系统](#配置系统)
+- [常见用例](#常见用例)
+- [高级示例](#高级示例)
 
-## Basic Usage
+## 基本用法
 
-### Local Analysis with Ollama (Default)
+### 使用 Ollama 进行本地分析（默认）
 ```bash
 video-analyzer path/to/video.mp4
 ```
 
-### Using OpenAI-Compatible API (OpenRouter/OpenAI)
+### 使用兼容 OpenAI 的 API（OpenRouter/OpenAI）
 ```bash
 video-analyzer path/to/video.mp4 --client openai_api --api-key your-key --api-url https://openrouter.ai/api/v1
 ```
 
-## Command Line Arguments
+## 命令行参数
 
-| Argument | Description | Default | Example |
+| 参数 | 描述 | 默认值 | 示例 |
 |----------|-------------|---------|---------|
-| `video_path` | Path to the input video file | (Required) | `video.mp4` |
-| `--config` | Path to configuration directory | config/ | `--config /path/to/config/` |
-| `--output` | Output directory for analysis results | output/ | `--output ./results/` |
-| `--client` | Client to use (ollama or openai_api) | ollama | `--client openai_api` |
-| `--ollama-url` | URL for the Ollama service | http://localhost:11434 | `--ollama-url http://localhost:11434` |
-| `--api-key` | API key for OpenAI-compatible service | None | `--api-key sk-xxx...` |
-| `--api-url` | API URL for OpenAI-compatible API | None | `--api-url https://openrouter.ai/api/v1` |
-| `--model` | Name of the vision model to use | llama3.2-vision | `--model gpt-4-vision-preview` |
-| `--duration` | Duration in seconds to process | None (full video) | `--duration 60` |
-| `--keep-frames` | Keep extracted frames after analysis | False | `--keep-frames` |
-| `--whisper-model` | Whisper model size or model path | medium | `--whisper-model large` |
-| `--start-stage` | Stage to start processing from (1-3) | 1 | `--start-stage 2` |
-| `--max-frames` | Maximum number of frames to process. When specified, frames are sampled evenly across the video duration rather than just taking the first N frames. | sys.maxsize | `--max-frames 100` |
-| `--log-level` | Set logging level | INFO | `--log-level DEBUG` |
-| `--prompt` | Question to ask about the video | "" | `--prompt "What activities are shown?"` |
-| `--language` | Set language for transcription | None (auto-detect) | `--language en` |
-| `--device` | Select device for Whisper model | cpu | `--device cuda` |
-| `--temperature` | Temperature for LLM generation | 0.2 | `--temperature 0.2` |
+| `video_path` | 输入视频文件的路径 | （必填） | `video.mp4` |
+| `--config` | 配置目录的路径 | config/ | `--config /path/to/config/` |
+| `--output` | 分析结果的输出目录 | output/ | `--output ./results/` |
+| `--client` | 要使用的客户端（ollama 或 openai_api） | ollama | `--client openai_api` |
+| `--ollama-url` | Ollama 服务的 URL | http://localhost:11434 | `--ollama-url http://localhost:11434` |
+| `--api-key` | 兼容 OpenAI 服务的 API 密钥 | 无 | `--api-key sk-xxx...` |
+| `--api-url` | 兼容 OpenAI API 的 API URL | 无 | `--api-url https://openrouter.ai/api/v1` |
+| `--model` | 要使用的视觉模型名称 | llama3.2-vision | `--model gpt-4-vision-preview` |
+| `--duration` | 要处理的时长（秒） | 无（完整视频） | `--duration 60` |
+| `--keep-frames` | 分析后保留提取的帧 | False | `--keep-frames` |
+| `--whisper-model` | Whisper 模型大小或模型路径 | medium | `--whisper-model large` |
+| `--start-stage` | 开始处理的阶段（1-3） | 1 | `--start-stage 2` |
+| `--max-frames` | 要处理的最大帧数。指定后，帧将在整个视频时长中均匀采样，而不是仅取前 N 帧。 | sys.maxsize | `--max-frames 100` |
+| `--log-level` | 设置日志级别 | INFO | `--log-level DEBUG` |
+| `--prompt` | 关于视频的问题 | "" | `--prompt "What activities are shown?"` |
+| `--language` | 设置转录的语言 | 无（自动检测） | `--language en` |
+| `--device` | 选择 Whisper 模型的设备 | cpu | `--device cuda` |
+| `--temperature` | LLM 生成的温度参数 | 0.2 | `--temperature 0.2` |
 
-### Processing Stages
-The `--start-stage` argument allows you to begin processing from a specific stage:
-1. Frame and Audio Processing
-2. Frame Analysis
-3. Video Reconstruction
+### 处理阶段
+`--start-stage` 参数允许你从特定阶段开始处理：
+1. 帧和音频处理
+2. 帧分析
+3. 视频重建
 
-## Configuration System
+## 配置系统
 
-The tool uses a cascading configuration system with the following priority:
-1. Command line arguments (highest priority)
-2. User config (config/config.json)
-3. Default config (config/default_config.json)
+该工具采用级联配置系统，优先级如下：
+1. 命令行参数（最高优先级）
+2. 用户配置（config/config.json）
+3. 默认配置（config/default_config.json）
 
-### Configuration File Structure
+### 配置文件结构
 
 ```json
 {
@@ -100,50 +100,50 @@ The tool uses a cascading configuration system with the following priority:
 }
 ```
 
-### Configuration Options Explained
+### 配置选项说明
 
-#### Client Settings
-- `clients.default`: Default LLM client (ollama/openai_api)
-- `clients.temperature`: Temperature for LLM generation (0.0-1.0, higher values = more creative)
-- `clients.ollama.url`: Ollama service URL
-- `clients.ollama.model`: Vision model for Ollama
-- `clients.openai_api.api_key`: API key for OpenAI-compatible services
-- `clients.openai_api.api_url`: API endpoint URL
-- `clients.openai_api.model`: Vision model for API service
+#### 客户端设置
+- `clients.default`: 默认 LLM 客户端（ollama/openai_api）
+- `clients.temperature`: LLM 生成的温度参数（0.0-1.0，值越高越具创造性）
+- `clients.ollama.url`: Ollama 服务 URL
+- `clients.ollama.model`: Ollama 使用的视觉模型
+- `clients.openai_api.api_key`: 兼容 OpenAI 服务的 API 密钥
+- `clients.openai_api.api_url`: API 端点 URL
+- `clients.openai_api.model`: API 服务使用的视觉模型
 
-#### Frame Analysis Settings
-- `frames.per_minute`: Target frames to extract per minute
-- `frames.analysis_threshold`: Threshold for key frame detection
-- `frames.min_difference`: Minimum difference between frames
-- `frames.max_count`: Maximum frames to extract
+#### 帧分析设置
+- `frames.per_minute`: 每分钟目标提取帧数
+- `frames.analysis_threshold`: 关键帧检测阈值
+- `frames.min_difference`: 帧之间的最小差异
+- `frames.max_count`: 最大提取帧数
 
-#### Response Length Settings
-- `response_length.frame`: Max length for frame analysis
-- `response_length.reconstruction`: Max length for video reconstruction
-- `response_length.narrative`: Max length for enhanced narrative
+#### 响应长度设置
+- `response_length.frame`: 帧分析的最大长度
+- `response_length.reconstruction`: 视频重建的最大长度
+- `response_length.narrative`: 增强叙述的最大长度
 
-#### Audio Processing Settings
-- `audio.sample_rate`: Audio sample rate in Hz
-- `audio.channels`: Number of audio channels
-- `audio.quality_threshold`: Minimum quality for transcription
-- `audio.chunk_length`: Audio chunk processing length
-- `audio.language_confidence_threshold`: Language detection confidence
-- `audio.language`: Force specific language (null for auto-detect)
+#### 音频处理设置
+- `audio.sample_rate`: 音频采样率（Hz）
+- `audio.channels`: 音频通道数
+- `audio.quality_threshold`: 转录的最低质量要求
+- `audio.chunk_length`: 音频块处理长度
+- `audio.language_confidence_threshold`: 语言检测置信度
+- `audio.language`: 强制指定语言（null 表示自动检测）
 
-#### General Settings
-- `prompt_dir`: Custom prompt directory path
-- `output_dir`: Analysis output directory
-- `keep_frames`: Retain extracted frames
-- `prompt`: Custom analysis prompt
+#### 常规设置
+- `prompt_dir`: 自定义提示词目录路径
+- `output_dir`: 分析输出目录
+- `keep_frames`: 保留提取的帧
+- `prompt`: 自定义分析提示词
 
-## Common Use Cases
+## 常见用例
 
-### Quick Local Analysis
+### 快速本地分析
 ```bash
 video-analyzer video.mp4
 ```
 
-### High-Quality Cloud Analysis with Custom Prompt
+### 使用自定义提示词进行高质量云端分析
 ```bash
 video-analyzer video.mp4 \
     --client openai_api \
@@ -151,10 +151,10 @@ video-analyzer video.mp4 \
     --api-url https://openrouter.ai/api/v1 \
     --model meta-llama/llama-3.2-11b-vision-instruct:free \
     --whisper-model large \
-    --prompt "What activities are happening in this video?"
+    --prompt "这个视频里发生了什么活动？"
 ```
 
-### Resume from Frame Analysis Stage
+### 从帧分析阶段恢复处理
 ```bash
 video-analyzer video.mp4 \
     --start-stage 2 \
@@ -162,31 +162,31 @@ video-analyzer video.mp4 \
     --keep-frames
 ```
 
-### Analyze Video with Evenly Sampled Frames
+### 使用均匀采样帧分析视频
 ```bash
 video-analyzer video.mp4 \
     --max-frames 5 \
     --keep-frames
 ```
-This will extract frames evenly spaced across the video duration. For example, in a 5-minute video, it would sample approximately one frame per minute rather than taking the first 5 frames.
+这将在整个视频时长中均匀提取帧。例如，在一个 5 分钟的视频中，它大约每分钟采样一帧，而不是取前 5 帧。
 
-### Specific Language Processing
+### 指定语言处理
 ```bash
 video-analyzer video.mp4 \
     --language es \
     --whisper-model large
 ```
 
-### GPU-Accelerated Processing
+### GPU 加速处理
 ```bash
 video-analyzer video.mp4 \
     --device cuda \
     --whisper-model large
 ```
 
-## Advanced Examples
+## 高级示例
 
-### Full Configuration with OpenRouter
+### 使用 OpenRouter 的完整配置
 ```bash
 video-analyzer video.mp4 \
     --config custom_config.json \
@@ -199,10 +199,10 @@ video-analyzer video.mp4 \
     --whisper-model large \
     --keep-frames \
     --log-level DEBUG \
-    --prompt "Focus on the interactions between people"
+    --prompt "重点关注人物之间的互动"
 ```
 
-### Local Processing with Frame Limits
+### 带帧数限制的本地处理
 ```bash
 video-analyzer video.mp4 \
     --client ollama \
@@ -214,19 +214,20 @@ video-analyzer video.mp4 \
     --language en
 ```
 
-### Resume Analysis from Specific Stage
+### 从特定阶段恢复分析
 ```bash
 video-analyzer video.mp4 \
     --start-stage 2 \
     --output ./custom_output \
     --keep-frames \
     --max-frames 50 \
-    --prompt "Describe the main events"
+    --prompt "描述主要事件"
 ```
 
-### Using Local Whisper Model
+### 使用本地 Whisper 模型
 ```bash
 video-analyzer video.mp4 \
     --whisper-model /path/to/whisper/model \
     --device cuda \
     --start-stage 1
+```

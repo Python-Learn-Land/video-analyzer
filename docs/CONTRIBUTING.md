@@ -1,136 +1,136 @@
-# Contributing to Video Analyzer
+# 为视频分析器做贡献
 
-Thank you for your interest in contributing to the Video Analyzer project! This guide outlines the process for making contributions through pull requests.
+感谢你为视频分析器项目做出贡献的兴趣！本指南概述了通过拉取请求（Pull Request）进行贡献的流程。
 
-## Before You Start
+## 开始之前
 
-1. Read [docs/DESIGN.md](DESIGN.md) thoroughly to understand:
-   - The project's architecture
-   - Core components and their interactions
-   - Design decisions and rationale
-   - Implementation details
+1. 仔细阅读 [docs/DESIGN.md](DESIGN.md)，以了解：
+   - 项目的架构
+   - 核心组件及其交互方式
+   - 设计决策及其理由
+   - 实现细节
 
-2. Familiarize yourself with the codebase:
-   - Review the project structure
-   - Understand the different modules
-   - Check existing features and implementations
+2. 熟悉代码库：
+   - 了解项目结构
+   - 理解各个模块
+   - 查看现有功能和实现
 
-## Proposing Changes
+## 提出变更建议
 
-1. Before creating a PR, start a discussion in the [GitHub Discussions](https://github.com/byjlw/video-analyzer/discussions) section:
-   - Outline your proposed changes
-   - Explain the motivation behind the changes
-   - Describe your planned implementation approach
-   - Wait for community feedback and maintainer input
+1. 在创建拉取请求之前，先在 [GitHub Discussions](https://github.com/byjlw/video-analyzer/discussions) 中发起讨论：
+   - 概述你提议的变更
+   - 解释变更背后的动机
+   - 描述你计划的实现方案
+   - 等待社区反馈和维护者的意见
 
-2. Use the appropriate discussion category:
-   - "Ideas" for new features
-   - "Q&A" for questions about implementation
-   - "Show and Tell" for sharing prototypes
+2. 使用适当的讨论分类：
+   - "Ideas" —— 新功能建议
+   - "Q&A" —— 关于实现的问题
+   - "Show and Tell" —— 分享原型
 
-## Making Changes
+## 进行修改
 
-Once your proposal has been discussed and approved:
+在你的提案经过讨论并获得批准后：
 
-1. Fork the repository and create a new branch:
+1. Fork 仓库并创建新分支：
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
-2. Follow the project's coding standards:
-   - Maintain consistent code style
-   - Add appropriate documentation
-   - Include type hints
-   - Write clear commit messages
+2. 遵循项目的编码规范：
+   - 保持代码风格一致
+   - 添加适当的文档
+   - 包含类型提示
+   - 编写清晰的提交信息
 
-3. Add tests for new functionality:
-   - Unit tests for individual components
-   - Integration tests for feature workflows
-   - Ensure all tests pass
+3. 为新功能添加测试：
+   - 单个组件的单元测试
+   - 功能工作流的集成测试
+   - 确保所有测试通过
 
-4. Update documentation:
-   - Add/update docstrings
-   - Update relevant .md files
-   - Add examples if applicable
+4. 更新文档：
+   - 添加/更新文档字符串（docstrings）
+   - 更新相关的 .md 文件
+   - 如适用，添加示例
 
-## Submitting Pull Requests
+## 提交拉取请求
 
-1. Before submitting:
-   - Ensure all tests pass
-   - Update documentation
-   - Add your changes to CHANGELOG.md
-   - Rebase on latest main branch
+1. 提交之前：
+   - 确保所有测试通过
+   - 更新文档
+   - 将你的变更添加到 CHANGELOG.md
+   - 在最新的 main 分支上执行 rebase
 
-2. Create a pull request:
-   - Reference the discussion thread
-   - Provide a clear description of changes
-   - List any breaking changes
-   - Include testing steps
+2. 创建拉取请求：
+   - 引用讨论帖
+   - 提供清晰的变更描述
+   - 列出任何破坏性变更
+   - 包含测试步骤
 
-3. PR description should include:
-   - Link to the discussion thread
-   - Summary of changes
-   - Testing performed
-   - Screenshots/videos if UI changes
-   - Breaking changes (if any)
+3. PR 描述应包含：
+   - 讨论帖链接
+   - 变更摘要
+   - 已执行的测试
+   - 如有 UI 变更，附上截图/视频
+   - 破坏性变更（如有）
 
-## Review Process
+## 审查流程
 
-1. Maintainers will review your PR:
-   - Code quality
-   - Test coverage
-   - Documentation
-   - Design consistency
+1. 维护者将审查你的 PR：
+   - 代码质量
+   - 测试覆盖率
+   - 文档
+   - 设计一致性
 
-2. Address review feedback:
-   - Make requested changes
-   - Respond to comments
-   - Update tests if needed
+2. 处理审查反馈：
+   - 按要求进行修改
+   - 回复评论
+   - 如需更新测试
 
-3. Once approved:
-   - Squash commits if requested
-   - Ensure branch is up to date
-   - Wait for merge by maintainers
+3. 一旦获得批准：
+   - 如要求，压缩提交（squash commits）
+   - 确保分支是最新的
+   - 等待维护者合并
 
-## Additional Guidelines
+## 额外指南
 
-### Code Style
-- Follow PEP 8 guidelines
-- Use meaningful variable names
-- Keep functions focused and concise
-- Add type hints to function parameters
-- Document complex logic
+### 代码风格
+- 遵循 PEP 8 规范
+- 使用有意义的变量名
+- 保持函数聚焦且简洁
+- 为函数参数添加类型提示
+- 为复杂逻辑添加注释
 
-### Testing
-- Write tests for new features
-- Update existing tests if needed
-- Ensure test coverage
-- Test edge cases
+### 测试
+- 为新功能编写测试
+- 如需更新现有测试
+- 确保测试覆盖
+- 测试边界情况
 
-### Documentation
-- Keep documentation up to date
-- Use clear, concise language
-- Include code examples
-- Update README.md if needed
+### 文档
+- 保持文档及时更新
+- 使用清晰、简洁的语言
+- 包含代码示例
+- 如需更新 README.md
 
-### Commit Messages
-- Use clear, descriptive messages
-- Reference issues/discussions
-- Follow conventional commits format:
+### 提交信息
+- 使用清晰、描述性的信息
+- 引用 issues/讨论帖
+- 遵循约定式提交格式：
   ```
-  feat: add new feature X
-  fix: resolve issue with Y
-  docs: update contributing guidelines
-  test: add tests for feature Z
+  feat: 添加新功能 X
+  fix: 修复 Y 的问题
+  docs: 更新贡献指南
+  test: 为功能 Z 添加测试
   ```
 
-## Getting Help
+## 获取帮助
 
-If you need help:
-1. Check existing [discussions](https://github.com/byjlw/video-analyzer/discussions)
-2. Start a new discussion if needed
-3. Tag maintainers for urgent issues
+如果你需要帮助：
+1. 查看现有的 [discussions](https://github.com/byjlw/video-analyzer/discussions)
+2. 如需要，发起新的讨论
+3. 紧急问题可以 @ 维护者
 
-## License
+## 开源协议
 
-By contributing, you agree that your contributions will be licensed under the project's apache License.
+通过做出贡献，你同意你的贡献将在项目的 Apache 许可证下发布。
