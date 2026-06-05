@@ -1,50 +1,50 @@
 # video-analyzer-tune
 
-DSPy-based prompt optimizer for [video-analyzer](https://github.com/byjlw/video-analyzer).
+基于 DSPy 的提示词优化器，用于 [video-analyzer](https://github.com/byjlw/video-analyzer)。
 
-Automatically improves the two prompts that `video-analyzer` uses — the per-frame analysis prompt and the final video reconstruction prompt — based on examples of what good output looks like for your specific content and use case.
+根据你的特定内容和用例的理想输出示例，自动优化 `video-analyzer` 使用的两个提示词 —— 逐帧分析提示词和最终视频重建提示词。
 
-## Overview
+## 概述
 
-`video-analyzer` works in two stages: it analyzes each video frame individually (building up a running log of observations), then synthesizes all the frame notes into a final video description. Both stages are driven by prompt files that you can customize.
+`video-analyzer` 分两个阶段工作：逐帧分析每个视频帧（构建持续运行的观察日志），然后将所有帧笔记合成为最终的视频描述。两个阶段都由可自定义的提示词文件驱动。
 
-`video-analyzer-tune` uses [DSPy MIPROv2](https://dspy.ai) to optimize both prompts end-to-end. You provide a few examples of what ideal output looks like — both at the frame level and the final description level — and the tuner finds better prompt instructions automatically.
+`video-analyzer-tune` 使用 [DSPy MIPROv2](https://dspy.ai) 端到端优化两个提示词。你提供一些理想输出的示例 —— 包括帧级别和最终描述级别 —— 优化器会自动找到更好的提示词指令。
 
-The main `video-analyzer` package is not affected in any way. Tuned prompts are written as new files that you point to via your config.
+主 `video-analyzer` 包完全不受影响。优化后的提示词会写入新文件，你通过配置指向这些文件即可。
 
-## Requirements
+## 环境要求
 
 - Python 3.8+
 - `video-analyzer >= 0.1.1`
-- An Ollama instance with a vision model, or an OpenAI-compatible API
+- Ollama 实例（需安装视觉模型）或兼容 OpenAI 的 API
 
-## Installation
+## 安装
 
 ```bash
 pip install video-analyzer-tune
 ```
 
-## Quick Start
+## 快速开始
 
-### Step 1 — Generate output with frames kept
+### 第一步 —— 生成输出并保留帧
 
-Run `video-analyzer` on a representative video and keep the extracted frames:
+在代表性视频上运行 `video-analyzer` 并保留提取的帧：
 
 ```bash
 video-analyzer my_video.mp4 --keep-frames
 ```
 
-This produces an `output/` directory containing:
-- `analysis.json` — frame-by-frame notes and the final description
-- `frames/` — the extracted frame images
+这会生成一个 `output/` 目录，包含：
+- `analysis.json` —— 逐帧笔记和最终描述
+- `frames/` —— 提取的帧图像
 
-### Step 2 — Edit analysis.json with your ideal output
+### 第二步 —— 用理想输出编辑 analysis.json
 
-Open `output/analysis.json` and edit two things:
+打开 `output/analysis.json` 并编辑两处内容：
 
-**Required:** Edit `video_description.response` to show what the ideal final description looks like for your use case.
+**必填：** 编辑 `video_description.response`，展示你的用例下理想最终描述的样子。
 
-**Recommended:** Edit each `frame_analyses[i].response` to show what ideal frame notes look like. This gives the optimizer a signal at both stages of the pipeline and produces better results.
+**推荐：** 编辑每个 `frame_analyses[i].response`，展示理想的帧笔记样子。这为流水线的两个阶段都提供了优化信号，能产生更好的结果。
 
 ```json
 {
@@ -52,18 +52,18 @@ Open `output/analysis.json` and edit two things:
     {
       "frame": 0,
       "timestamp": 0.0,
-      "response": "Your ideal frame note here — what details matter for your use case"
+      "response": "你的理想帧笔记写在这里 —— 哪些细节对你的用例重要"
     }
   ],
   "video_description": {
-    "response": "Your ideal final description here — the style, length, and focus you want"
+    "response": "你的理想最终描述写在这里 —— 你想要的风格、长度和关注点"
   }
 }
 ```
 
-The more videos you edit and include as training examples, the better the results.
+你编辑并作为训练示例包含的视频越多，结果就越好。
 
-### Step 3 — Create training_data.json
+### 第三步 —— 创建 training_data.json
 
 ```json
 {
@@ -73,7 +73,7 @@ The more videos you edit and include as training examples, the better the result
 }
 ```
 
-Add one entry per video you edited:
+每编辑一个视频就添加一个条目：
 
 ```json
 {
@@ -85,17 +85,17 @@ Add one entry per video you edited:
 }
 ```
 
-### Step 4 — Run the tuner
+### 第四步 —— 运行优化器
 
 ```bash
 video-analyzer-tune --training-data training_data.json --output-dir tuned_prompts/
 ```
 
-This runs MIPROv2 optimization, which will take some time depending on `--num-candidates` and `--num-trials`.
+这会运行 MIPROv2 优化，耗时取决于 `--num-candidates` 和 `--num-trials` 的设置。
 
-### Step 5 — Update your config
+### 第五步 —— 更新你的配置
 
-When tuning completes, the tool prints a config snippet to paste into your `config/config.json`:
+优化完成后，工具会打印一段配置片段，你可以粘贴到 `config/config.json` 中：
 
 ```json
 "prompt_dir": "tuned_prompts",
@@ -105,9 +105,9 @@ When tuning completes, the tool prints a config snippet to paste into your `conf
 ]
 ```
 
-Run `video-analyzer` as normal — it will use your tuned prompts automatically.
+照常运行 `video-analyzer` —— 它会自动使用你优化后的提示词。
 
-## Training Data Format
+## 训练数据格式
 
 ### training_data.json
 
@@ -119,38 +119,38 @@ Run `video-analyzer` as normal — it will use your tuned prompts automatically.
 }
 ```
 
-Paths can be absolute or relative to the location of `training_data.json`.
+路径可以是绝对路径，也可以是相对于 `training_data.json` 所在位置的相对路径。
 
-### What to edit in analysis.json
+### analysis.json 中需要编辑的内容
 
-| Field | Required | Description |
+| 字段 | 是否必填 | 描述 |
 |---|---|---|
-| `video_description.response` | Yes | Your ideal final video description |
-| `frame_analyses[i].response` | Recommended | Your ideal frame note for each frame |
-| `prompt` | No | Leave as-is |
-| `transcript` | No | Leave as-is |
+| `video_description.response` | 是 | 你理想的最终视频描述 |
+| `frame_analyses[i].response` | 推荐 | 每帧的理想帧笔记 |
+| `prompt` | 否 | 保持原样 |
+| `transcript` | 否 | 保持原样 |
 
-## CLI Reference
+## CLI 参考
 
-| Flag | Default | Description |
+| 参数 | 默认值 | 描述 |
 |---|---|---|
-| `--training-data` | required | Path to training_data.json |
-| `--output-dir` | `tuned_prompts` | Directory to write tuned prompt files |
-| `--client` | `ollama` | LLM client: `ollama` or `openai_api` |
-| `--model` | `llama3.2-vision` | Vision model to use for optimization runs |
-| `--ollama-url` | `http://localhost:11434` | Ollama server URL |
-| `--api-key` | — | API key (required when `--client openai_api`) |
-| `--api-url` | — | API endpoint URL (required when `--client openai_api`) |
-| `--num-candidates` | `10` | Number of prompt variations generated per module. Higher = more thorough but slower. Range: 5–20 |
-| `--num-trials` | `20` | Number of optimization trials. Higher = better results but slower. Range: 10–50 |
-| `--max-bootstrapped-demos` | `3` | Max few-shot examples generated by bootstrapping |
-| `--max-labeled-demos` | `4` | Max few-shot examples taken from your training data |
-| `--description-weight` | `0.7` | How much the final description quality influences the score (0.0–1.0). The remainder weights frame analysis quality. Use `0.5` if you care equally about both; use `1.0` to optimize only for the final description |
-| `--log-level` | `INFO` | Logging level: DEBUG / INFO / WARNING / ERROR |
+| `--training-data` | 必填 | training_data.json 的路径 |
+| `--output-dir` | `tuned_prompts` | 写入优化后提示词文件的目录 |
+| `--client` | `ollama` | LLM 客户端：`ollama` 或 `openai_api` |
+| `--model` | `llama3.2-vision` | 优化运行使用的视觉模型 |
+| `--ollama-url` | `http://localhost:11434` | Ollama 服务器 URL |
+| `--api-key` | — | API 密钥（`--client openai_api` 时必填） |
+| `--api-url` | — | API 端点 URL（`--client openai_api` 时必填） |
+| `--num-candidates` | `10` | 每个模块生成的提示词变体数量。越高越彻底但越慢。范围：5–20 |
+| `--num-trials` | `20` | 优化试验次数。越高效果越好但越慢。范围：10–50 |
+| `--max-bootstrapped-demos` | `3` | 通过 bootstrapping 生成的最大 few-shot 示例数 |
+| `--max-labeled-demos` | `4` | 从你的训练数据中选取的最大 few-shot 示例数 |
+| `--description-weight` | `0.7` | 最终描述质量对分数的影响程度（0.0–1.0）。剩余部分权重分配给帧分析质量。如果两者同样重要则使用 `0.5`；如果只想优化最终描述则使用 `1.0` |
+| `--log-level` | `INFO` | 日志级别：DEBUG / INFO / WARNING / ERROR |
 
-## LLM Configuration
+## LLM 配置
 
-### Using Ollama (default)
+### 使用 Ollama（默认）
 
 ```bash
 video-analyzer-tune \
@@ -159,7 +159,7 @@ video-analyzer-tune \
   --model llama3.2-vision
 ```
 
-### Using an OpenAI-compatible API (e.g. OpenRouter)
+### 使用兼容 OpenAI 的 API（例如 OpenRouter）
 
 ```bash
 video-analyzer-tune \
@@ -171,28 +171,28 @@ video-analyzer-tune \
   --api-key YOUR_API_KEY
 ```
 
-## How It Works
+## 工作原理
 
-`video-analyzer` uses two prompt files:
+`video-analyzer` 使用两个提示词文件：
 
-1. **`frame_analysis.txt`** — called once per frame with the image and all previous frame notes. Produces the per-frame observation log.
-2. **`describe.txt`** — called once at the end with all frame notes and the audio transcript. Produces the final video description.
+1. **`frame_analysis.txt`** —— 每帧调用一次，传入图像和所有之前的帧笔记。生成逐帧观察日志。
+2. **`describe.txt`** —— 最后调用一次，传入所有帧笔记和音频转录文本。生成最终视频描述。
 
-`video-analyzer-tune` wraps both prompts in a DSPy pipeline that mirrors the exact processing logic of `video-analyzer`. It then runs [MIPROv2](https://dspy.ai/learn/optimization/optimizers/) — a Bayesian optimizer that generates candidate instruction variations and scores them against your training examples.
+`video-analyzer-tune` 将两个提示词包装在一个 DSPy 流水线中，该流水线精确镜像 `video-analyzer` 的处理逻辑。然后运行 [MIPROv2](https://dspy.ai/learn/optimization/optimizers/) —— 一种贝叶斯优化器，生成候选指令变体并根据你的训练示例进行评分。
 
-Scoring uses an LLM-as-judge approach: the same model evaluates how well the generated output matches your ideal examples on a 1–5 scale. Frame note quality and final description quality are combined using the configurable `--description-weight`.
+评分采用 LLM-as-judge 方法：同一模型评估生成输出与理想示例的匹配程度，按 1–5 分制打分。帧笔记质量和最终描述质量通过可配置的 `--description-weight` 进行加权组合。
 
-After optimization, the improved instruction text is written into new `.txt` files that preserve all the `{TOKEN}` placeholders (`{PREVIOUS_FRAMES}`, `{FRAME_NOTES}`, etc.) that `video-analyzer` uses for its string replacement — making the output files drop-in compatible.
+优化完成后，改进后的指令文本会写入新的 `.txt` 文件，保留所有 `video-analyzer` 用于字符串替换的 `{TOKEN}` 占位符（`{PREVIOUS_FRAMES}`、`{FRAME_NOTES}` 等）—— 使输出文件可以直接替换使用。
 
-## Tips for Better Results
+## 提升效果的建议
 
-- **Use multiple videos.** Even 3–5 diverse examples significantly improves optimization quality.
-- **Edit frame notes too.** If you only edit the final description, the optimizer has less signal about what good intermediate analysis looks like.
-- **Be specific in your edits.** The more clearly your ideal examples demonstrate the style and focus you want, the better the optimizer can learn from them.
-- **Use the same model for tuning as for inference.** The optimized prompts are tuned to the specific model's behavior.
-- **Increase `--num-candidates` and `--num-trials`** for better results if you have the time. Start with defaults and increase from there.
-- **Use `--description-weight 0.5`** if you read the frame notes directly and care as much about their quality as the final description.
+- **使用多个视频。** 即使是 3–5 个多样化的示例也能显著提升优化质量。
+- **也编辑帧笔记。** 如果你只编辑最终描述，优化器能获得的好中间分析信号就较少。
+- **编辑要具体。** 你的理想示例越清晰地展示你想要的风格和关注点，优化器就能越好地学习。
+- **优化和推理使用同一模型。** 优化后的提示词是针对特定模型行为调优的。
+- **增加 `--num-candidates` 和 `--num-trials`** 如果时间允许可以获得更好的结果。从默认值开始，再逐步增加。
+- **使用 `--description-weight 0.5`** 如果你直接阅读帧笔记，并且同样关心帧笔记和最终描述的质量。
 
-## License
+## 开源协议
 
-Apache License 2.0 — same as [video-analyzer](https://github.com/byjlw/video-analyzer).
+Apache License 2.0 —— 与 [video-analyzer](https://github.com/byjlw/video-analyzer) 相同。
