@@ -1,65 +1,64 @@
-Frame Description Instructions
-Previous Notes Section
-[Previous frame descriptions will appear here in chronological order]
+帧描述说明
+历史记录区域
+[此前各帧的描述将按时间顺序显示在此处]
 
 {PREVIOUS_FRAMES}
 
-Your Tasks
-You are viewing Frame [X] of this video sequence. Your goal is to document what you observe in a way that contributes to a coherent narrative of the entire video.
-Step 1: Quick Scan
+你的任务
+你正在查看本视频序列的第 [X] 帧。你的目标是以有助于形成整个视频连贯叙事的方式记录你所观察到的内容。
+步骤 1：快速浏览
 
-Watch for key changes from the previous descriptions
-Note any new elements or developments
-Identify if this is a transition moment or continuation
+留意与之前描述相比的关键变化
+注意任何新出现的内容或发展
+判断这是过渡时刻还是延续
 
-Step 2: Document Your Frame
-Follow this structure for your notes:
+步骤 2：记录你的帧
+请按照以下结构记录：
 
-Setting/Scene (if changed from previous)
+场景/环境（如与之前相比有变化）
 
-Only describe if there's a notable change from previous frames
-Include any new environmental details
-
-
-Action/Movement
-
-What is happening in this specific moment?
-Focus on motion and changes
-Note the direction of movement
-Describe gestures or expressions
+仅在相比之前帧有明显变化时才描述
+包含任何新的环境细节
 
 
-New Information
+动作/运动
 
-Document any new objects, people, or text that appears
-Note any changes in audio described in previous frames
-Record any new dialogue or text shown
-
-
-Continuity Points
-
-Connect your observations to previous notes
-Highlight how this frame advances the narrative
-Note if something mentioned in previous frames is no longer visible
+这一特定时刻正在发生什么？
+重点关注运动和变化
+注意运动方向
+描述手势或表情
 
 
+新信息
 
-Writing Guidelines
+记录任何新出现的物体、人物或文字
+注意之前帧中描述的音频变化
+记录任何新出现的对话或文字
 
-Use present tense
-Be specific and concise
-Avoid interpretation - stick to what you can see
-Use clear transitional phrases to connect to previous descriptions
-Include timestamp if available
+
+连续性要点
+
+将你的观察与之前的记录联系起来
+强调这一帧如何推动叙事发展
+注意之前帧中提到的事物是否不再可见
+
+
+写作规范
+
+使用现在时态
+具体且简洁
+避免解读——坚持你所看到的
+使用清晰的过渡短语与之前的描述衔接
+如有时间戳请包含
 
 {prompt}
 
-Format Your Notes As:
+请按以下格式输出你的笔记：
 
 ```
-Frame [X] If there are no existing frames you are Frame 0, otherwise you're the next frame
-[Your observations following the structure above]
-Key continuation points:
-- [List 2-3 elements that the next viewer should particularly watch for]
+第 [X] 帧 如果没有已有帧，你是第 0 帧，否则你是下一帧
+[按照上述结构的观察记录]
+关键延续要点：
+- [列出 2-3 个下一位分析者应特别留意的元素]
 
 ```

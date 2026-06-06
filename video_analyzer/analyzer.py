@@ -29,7 +29,7 @@ class VideoAnalyzer:
     def _format_user_prompt(self) -> str:
         """Format the user's prompt by adding prefix if not empty."""
         if self.user_prompt:
-            return f"I want to know {self.user_prompt}"
+            return f"我想知道 {self.user_prompt}"
         return ""
         
     def _load_prompts(self):
@@ -45,8 +45,8 @@ class VideoAnalyzer:
         formatted_analyses = []
         for i, analysis in enumerate(self.previous_analyses):
             formatted_analysis = (
-                f"Frame {i}\n"
-                f"{analysis.get('response', 'No analysis available')}\n"
+                f"第 {i} 帧\n"
+                f"{analysis.get('response', '暂无分析结果')}\n"
             )
             formatted_analyses.append(formatted_analysis)
             
@@ -60,7 +60,7 @@ class VideoAnalyzer:
         # Replace tokens in the prompt template
         prompt = self.frame_prompt.replace("{PREVIOUS_FRAMES}", self._format_previous_analyses())
         prompt = prompt.replace("{prompt}", self._format_user_prompt())
-        prompt = f"{prompt}\nThis is frame {frame.number} captured at {frame.timestamp:.2f} seconds."
+        prompt = f"{prompt}\n这是第 {frame.number} 帧，在视频 {frame.timestamp:.2f} 秒处截取。"
 
         try:
             response = self.client.generate(
@@ -90,8 +90,8 @@ class VideoAnalyzer:
         frame_notes = []
         for i, (frame, analysis) in enumerate(zip(frames, frame_analyses)):
             frame_note = (
-                f"Frame {i} ({frame.timestamp:.2f}s):\n"
-                f"{analysis.get('response', 'No analysis available')}"
+                f"第 {i} 帧 ({frame.timestamp:.2f}秒):\n"
+                f"{analysis.get('response', '暂无分析结果')}"
             )
             frame_notes.append(frame_note)
 

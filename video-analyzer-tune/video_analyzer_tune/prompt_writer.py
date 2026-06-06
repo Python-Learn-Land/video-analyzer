@@ -48,7 +48,7 @@ def _extract_instruction(predict_module: dspy.Predict) -> str:
     if sig_class is not None and getattr(sig_class, "__doc__", None):
         return sig_class.__doc__.strip()
 
-    return "Analyze the provided inputs and produce the requested output."
+    return "分析所提供的输入并生成所要求的输出。"
 
 
 def extract_optimized_instructions(optimized_pipeline) -> dict:
