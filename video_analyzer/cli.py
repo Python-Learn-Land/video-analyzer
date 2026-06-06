@@ -195,8 +195,8 @@ def main():
             "video_description": video_description
         }
         
-        with open(output_dir / "analysis.json", "w") as f:
-            json.dump(results, f, indent=2)
+        with open(output_dir / "analysis.json", "w", encoding='utf-8') as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
             
         logger.info("\nTranscript:")
         if transcript:

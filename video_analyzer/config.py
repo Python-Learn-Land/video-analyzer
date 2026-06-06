@@ -36,11 +36,11 @@ class Config:
         try:
             if self.user_config.exists():
                 logger.debug(f"Loading user config from {self.user_config}")
-                with open(self.user_config) as f:
+                with open(self.user_config, encoding='utf-8') as f:
                     self.config = json.load(f)
             else:
                 logger.debug(f"No user config found, loading default config from {self.default_config}")
-                with open(self.default_config) as f:
+                with open(self.default_config, encoding='utf-8') as f:
                     self.config = json.load(f)
                     
             # Ensure prompts is a list
@@ -93,8 +93,8 @@ class Config:
         """Save current configuration to user config file."""
         try:
             self.config_dir.mkdir(parents=True, exist_ok=True)
-            with open(self.user_config, 'w') as f:
-                json.dump(self.config, f, indent=2)
+            with open(self.user_config, 'w', encoding='utf-8') as f:
+                json.dump(self.config, f, indent=2, ensure_ascii=False)
             logger.debug(f"Saved user config to {self.user_config}")
         except Exception as e:
             logger.error(f"Error saving user config: {e}")
