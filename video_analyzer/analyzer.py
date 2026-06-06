@@ -52,14 +52,16 @@ class VideoAnalyzer:
             
         return "\n".join(formatted_analyses)
 
-    def analyze_frame(self, frame: Frame) -> Dict[str, Any]:
+    def analyze_frame(self, frame: Frame, current_idx: int = 0, total: int = 0) -> Dict[str, Any]:
         """Analyze a single frame using the LLM."""
+        logger.info(f"Analyzing frame {current_idx}/{total} (frame_{frame.number} @ {frame.timestamp:.2f}s)...")
+
         # Replace {PREVIOUS_FRAMES} token with formatted previous analyses
         # Replace tokens in the prompt template
         prompt = self.frame_prompt.replace("{PREVIOUS_FRAMES}", self._format_previous_analyses())
         prompt = prompt.replace("{prompt}", self._format_user_prompt())
         prompt = f"{prompt}\nThis is frame {frame.number} captured at {frame.timestamp:.2f} seconds."
-        
+
         try:
             response = self.client.generate(
                 prompt=prompt,
@@ -68,7 +70,7 @@ class VideoAnalyzer:
                 temperature=self.temperature,
                 num_predict=300
             )
-            logger.debug(f"Successfully analyzed frame {frame.number}")
+            logger.info(f"  Frame {current_idx}/{total} analysis complete")
             
             # Store the analysis for future frames
             analysis_result = {k: v for k, v in response.items() if k != "context"}
@@ -81,9 +83,10 @@ class VideoAnalyzer:
             self.previous_analyses.append(error_result)
             return error_result
 
-    def reconstruct_video(self, frame_analyses: List[Dict[str, Any]], frames: List[Frame], 
+    def reconstruct_video(self, frame_analyses: List[Dict[str, Any]], frames: List[Frame],
                          transcript: Optional[AudioTranscript] = None) -> Dict[str, Any]:
         """Reconstruct video description from frame analyses and transcript."""
+        logger.info("Preparing video reconstruction...")
         frame_notes = []
         for i, (frame, analysis) in enumerate(zip(frames, frame_analyses)):
             frame_note = (
@@ -91,25 +94,27 @@ class VideoAnalyzer:
                 f"{analysis.get('response', 'No analysis available')}"
             )
             frame_notes.append(frame_note)
-        
+
         analysis_text = "\n\n".join(frame_notes)
-        
+
         # Get first frame analysis
         first_frame_text = ""
         if frame_analyses and len(frame_analyses) > 0:
             first_frame_text = frame_analyses[0].get('response', '')
-        
+
         # Include transcript information if available
         transcript_text = ""
         if transcript and transcript.text.strip():
             transcript_text = transcript.text
-        
+            logger.info(f"Including transcript ({len(transcript_text)} chars)")
+
         # Replace tokens in the prompt template
         prompt = self.video_prompt.replace("{prompt}", self._format_user_prompt())
         prompt = prompt.replace("{FRAME_NOTES}", analysis_text)
         prompt = prompt.replace("{FIRST_FRAME}", first_frame_text)
         prompt = prompt.replace("{TRANSCRIPT}", transcript_text)
-        
+
+        logger.info("Sending reconstruction request to LLM...")
         try:
             response = self.client.generate(
                 prompt=prompt,
@@ -117,7 +122,7 @@ class VideoAnalyzer:
                 temperature=self.temperature,
                 num_predict=1000
             )
-            logger.info("Successfully reconstructed video description")
+            logger.info("Video description reconstructed successfully")
             return {k: v for k, v in response.items() if k != "context"}
         except Exception as e:
             logger.error(f"Error reconstructing video: {e}")

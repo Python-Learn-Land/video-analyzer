@@ -64,6 +64,7 @@ class AudioProcessor:
         
         try:
             # Extract audio using ffmpeg
+            logger.info(f"Extracting audio from {video_path.name} using ffmpeg...")
             subprocess.run([
                 "ffmpeg", "-i", str(video_path),
                 "-vn",  # No video
@@ -73,8 +74,9 @@ class AudioProcessor:
                 "-y",  # Overwrite output
                 str(audio_path)
             ], check=True, capture_output=True)
-            
-            logger.debug("Successfully extracted audio using ffmpeg")
+
+            file_size = audio_path.stat().st_size / 1024  # KB
+            logger.info(f"Audio extracted successfully: {file_size:.1f} KB → {audio_path}")
             return audio_path
         except subprocess.CalledProcessError as e:
             error_output = e.stderr.decode()
@@ -111,6 +113,7 @@ class AudioProcessor:
         if self.language and self.language not in accepted_languages:
             logger.warning(f"Invalid language code: {self.language}, will detect language automatically")
         try:
+            logger.info(f"Transcribing audio ({audio_path.stat().st_size / 1024:.1f} KB)...")
             # Initial transcription with VAD filtering
             segments, info = self.model.transcribe(
                 str(audio_path),
@@ -125,6 +128,9 @@ class AudioProcessor:
             if not segments_list:
                 logger.warning("No speech detected in audio")
                 return None
+
+            total_duration = segments_list[-1].end if segments_list else 0
+            logger.info(f"Transcription complete: {len(segments_list)} segments, detected language '{info.language}', duration {total_duration:.1f}s")
             
             # Convert segments to the expected format
             segment_data = [

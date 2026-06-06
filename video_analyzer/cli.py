@@ -152,22 +152,23 @@ def main():
             
         # Stage 2: Frame Analysis
         if args.start_stage <= 2:
-            logger.info("Analyzing frames...")
+            total_frames_to_analyze = len(frames)
+            logger.info(f"Analyzing {total_frames_to_analyze} frames with model {model}...")
             analyzer = VideoAnalyzer(
-                client, 
-                model, 
+                client,
+                model,
                 prompt_loader,
                 config.get("clients", {}).get("temperature", 0.2),
                 config.get("prompt", "")
             )
             frame_analyses = []
-            for frame in frames:
-                analysis = analyzer.analyze_frame(frame)
+            for i, frame in enumerate(frames):
+                analysis = analyzer.analyze_frame(frame, current_idx=i + 1, total=total_frames_to_analyze)
                 frame_analyses.append(analysis)
-                
+
         # Stage 3: Video Reconstruction
         if args.start_stage <= 3:
-            logger.info("Reconstructing video description...")
+            logger.info("Reconstructing video description from frame analyses...")
             video_description = analyzer.reconstruct_video(
                 frame_analyses, frames, transcript
             )

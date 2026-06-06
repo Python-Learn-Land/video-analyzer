@@ -54,14 +54,16 @@ class VideoProcessor:
         cap = cv2.VideoCapture(str(self.video_path))
         if not cap.isOpened():
             raise ValueError(f"Could not open video file: {self.video_path}")
-        
+
         fps = cap.get(cv2.CAP_PROP_FPS)
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         video_duration = total_frames / fps
-        
+
         if duration:
             video_duration = min(duration, video_duration)
             total_frames = int(min(total_frames, duration * fps))
+
+        logger.info(f"Video info: {self.video_path.name}, {video_duration:.1f}s, {fps:.1f} fps, {total_frames} frames total, resolution {int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))}x{int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))}")
         
         # Calculate target number of frames
         target_frames = max(1, min(
@@ -76,21 +78,27 @@ class VideoProcessor:
         frame_candidates = []
         prev_frame = None
         frame_count = 0
-        
+        report_interval = max(1, total_frames // 20)  # Report progress ~20 times
+
+        logger.info(f"Scanning for keyframes (target: {target_frames}, sample interval: {sample_interval})...")
         while frame_count < total_frames:
             ret, frame = cap.read()
             if not ret:
                 break
-                
+
             if frame_count % sample_interval == 0:
                 score = self._calculate_frame_difference(frame, prev_frame)
                 if score > self.FRAME_DIFFERENCE_THRESHOLD:
                     frame_candidates.append((frame_count, frame, score))
                 prev_frame = frame.copy()
-                
+
             frame_count += 1
-            
+            if frame_count % report_interval == 0:
+                progress_pct = (frame_count / total_frames) * 100
+                logger.info(f"  Frame scan: {frame_count}/{total_frames} ({progress_pct:.0f}%) — {len(frame_candidates)} candidates found")
+
         cap.release()
+        logger.info(f"Keyframe scanning complete: {len(frame_candidates)} candidates, selecting top {target_frames}...")
         
         # Select the most significant frames by score, then restore chronological order
         selected_candidates = sorted(frame_candidates, key=lambda x: x[2], reverse=True)[:target_frames]
@@ -106,11 +114,15 @@ class VideoProcessor:
         selected_frames = sorted(selected_frames, key=lambda x: x[0])
 
         self.frames = []
+        total_selected = len(selected_frames)
+        logger.info(f"Saving {total_selected} selected frames to disk...")
         for idx, (frame_num, frame, score) in enumerate(selected_frames):
             frame_path = self.output_dir / f"frame_{idx}.jpg"
             cv2.imwrite(str(frame_path), frame)
             timestamp = frame_num / fps
             self.frames.append(Frame(idx, frame_path, timestamp, score))
-        
+            if (idx + 1) % max(1, total_selected // 10) == 0 or idx == total_selected - 1:
+                logger.info(f"  Saved frame {idx + 1}/{total_selected} @ {timestamp:.2f}s")
+
         logger.info(f"Extracted {len(self.frames)} frames from video (target was {target_frames})")
         return self.frames
