@@ -177,23 +177,37 @@ class VideoAnalyzerUI:
             # Check both the results directory and the default 'output' directory
             analysis_file = results_dir / 'analysis.json'
             default_output = Path('output/analysis.json')
-            
+
+            def _move_or_copy(src: Path, dst: Path) -> bool:
+                """Move a file from src to dst, falling back to copy+delete."""
+                if not src.exists():
+                    return False
+                try:
+                    src.rename(dst)
+                    logger.debug(f"Moved {src.name} to: {dst}")
+                    return True
+                except Exception as e:
+                    logger.error(f"Error moving {src.name}: {e}")
+                    try:
+                        dst.write_text(src.read_text())
+                        logger.debug(f"Copied {src.name} content")
+                        src.unlink()
+                        return True
+                    except Exception as copy_error:
+                        logger.error(f"Error copying {src.name}: {copy_error}")
+                        return False
+
             if default_output.exists():
                 logger.debug(f"Found analysis file in default output directory: {default_output}")
-                try:
-                    # Move the file to our results directory
-                    default_output.rename(analysis_file)
-                    logger.debug(f"Moved analysis file to: {analysis_file}")
-                except Exception as e:
-                    logger.error(f"Error moving analysis file: {e}")
-                    # If move fails, try to copy the content
-                    try:
-                        analysis_file.write_text(default_output.read_text())
-                        logger.debug("Copied analysis file content")
-                        default_output.unlink()
-                    except Exception as copy_error:
-                        logger.error(f"Error copying analysis file: {copy_error}")
-                        return jsonify({'error': 'Error accessing analysis file'}), 500
+                if not _move_or_copy(default_output, analysis_file):
+                    return jsonify({'error': 'Error accessing analysis file'}), 500
+
+                # Also move transcript.json and frame_analyses.json if they exist
+                for filename in ('transcript.json', 'frame_analyses.json'):
+                    src = Path('output') / filename
+                    dst = results_dir / filename
+                    if src.exists():
+                        _move_or_copy(src, dst)
             if not analysis_file.exists():
                 logger.error(f"Analysis file not found: {analysis_file}")
                 return jsonify({'error': 'Analysis file not found'}), 404

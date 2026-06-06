@@ -136,6 +136,16 @@ video-analyzer path/to/video.mp4 --client openai_api --api-key your-key --api-ur
 - `keep_frames`: 保留提取的帧
 - `prompt`: 自定义分析提示词
 
+#### 输出文件结构
+
+分析完成后，`output_dir` 目录下会生成以下文件：
+
+- `analysis.json` —— 元数据和最终视频描述
+- `transcript.json` —— 音频转录文本（如果没有音频则为 `null`）
+- `frame_analyses.json` —— 逐帧分析结果数组
+
+若设置了 `--keep-frames`，还会保留 `frames/` 目录存放提取的视频帧图像。
+
 ## 常见用例
 
 ### 快速本地分析

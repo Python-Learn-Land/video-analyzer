@@ -174,44 +174,58 @@ def main():
             )
         
         output_dir.mkdir(parents=True, exist_ok=True)
-        results = {
-            "metadata": {
-                "client": config.get("clients", {}).get("default"),
-                "model": model,
-                "whisper_model": config.get("audio", {}).get("whisper_model"),
-                "frames_per_minute": config.get("frames", {}).get("per_minute"),
-                "duration_processed": config.get("duration"),
-                "frames_extracted": len(frames),
-                "frames_processed": min(len(frames), args.max_frames),
-                "start_stage": args.start_stage,
-                "audio_language": transcript.language if transcript else None,
-                "transcription_successful": transcript is not None
-            },
-            "transcript": {
-                "text": transcript.text if transcript else None,
-                "segments": transcript.segments if transcript else None
-            } if transcript else None,
-            "frame_analyses": frame_analyses,
+
+        # Build metadata
+        metadata = {
+            "client": config.get("clients", {}).get("default"),
+            "model": model,
+            "whisper_model": config.get("audio", {}).get("whisper_model"),
+            "frames_per_minute": config.get("frames", {}).get("per_minute"),
+            "duration_processed": config.get("duration"),
+            "frames_extracted": len(frames),
+            "frames_processed": min(len(frames), args.max_frames),
+            "start_stage": args.start_stage,
+            "audio_language": transcript.language if transcript else None,
+            "transcription_successful": transcript is not None
+        }
+
+        # Write analysis.json (metadata + video_description)
+        analysis_data = {
+            "metadata": metadata,
             "video_description": video_description
         }
-        
         with open(output_dir / "analysis.json", "w", encoding='utf-8') as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-            
+            json.dump(analysis_data, f, indent=2, ensure_ascii=False)
+
+        # Write transcript.json
+        transcript_data = {
+            "text": transcript.text if transcript else None,
+            "segments": transcript.segments if transcript else None
+        } if transcript else None
+        with open(output_dir / "transcript.json", "w", encoding='utf-8') as f:
+            json.dump(transcript_data, f, indent=2, ensure_ascii=False)
+
+        # Write frame_analyses.json
+        with open(output_dir / "frame_analyses.json", "w", encoding='utf-8') as f:
+            json.dump(frame_analyses, f, indent=2, ensure_ascii=False)
+
         logger.info("\nTranscript:")
         if transcript:
             logger.info(transcript.text)
         else:
-            logger.info("No reliable transcript available")
-            
+            logger.info("暂无可用转录文本")
+
         if video_description:
-            logger.info("\nVideo Description:")
-            logger.info(video_description.get("response", "No description generated"))
-        
+            logger.info("\n视频描述:")
+            logger.info(video_description.get("response", "未生成描述"))
+
         if not config.get("keep_frames"):
             cleanup_files(output_dir)
-        
-        logger.info(f"Analysis complete. Results saved to {output_dir / 'analysis.json'}")
+
+        logger.info("分析完成。结果已保存至:")
+        logger.info(f"  {output_dir / 'analysis.json'}")
+        logger.info(f"  {output_dir / 'transcript.json'}")
+        logger.info(f"  {output_dir / 'frame_analyses.json'}")
             
     except Exception as e:
         logger.error(f"Error during video analysis: {e}")

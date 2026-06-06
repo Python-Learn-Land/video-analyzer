@@ -35,26 +35,31 @@ video-analyzer my_video.mp4 --keep-frames
 ```
 
 这会生成一个 `output/` 目录，包含：
-- `analysis.json` —— 逐帧笔记和最终描述
+- `analysis.json` —— 元数据和最终视频描述
+- `transcript.json` —— 音频转录文本
+- `frame_analyses.json` —— 逐帧分析笔记
 - `frames/` —— 提取的帧图像
 
-### 第二步 —— 用理想输出编辑 analysis.json
+### 第二步 —— 用理想输出编辑相关文件
 
-打开 `output/analysis.json` 并编辑两处内容：
+编辑以下文件中的理想输出：
 
-**必填：** 编辑 `video_description.response`，展示你的用例下理想最终描述的样子。
+**必填：** 编辑 `analysis.json` 中的 `video_description.response`，展示你的用例下理想最终描述的样子。
 
-**推荐：** 编辑每个 `frame_analyses[i].response`，展示理想的帧笔记样子。这为流水线的两个阶段都提供了优化信号，能产生更好的结果。
+**推荐：** 编辑 `frame_analyses.json` 中每个条目的 `response`，展示理想的帧笔记样子。这为流水线的两个阶段都提供了优化信号，能产生更好的结果。
 
 ```json
+// frame_analyses.json
+[
+  {
+    "frame": 0,
+    "timestamp": 0.0,
+    "response": "你的理想帧笔记写在这里 —— 哪些细节对你的用例重要"
+  }
+]
+
+// analysis.json
 {
-  "frame_analyses": [
-    {
-      "frame": 0,
-      "timestamp": 0.0,
-      "response": "你的理想帧笔记写在这里 —— 哪些细节对你的用例重要"
-    }
-  ],
   "video_description": {
     "response": "你的理想最终描述写在这里 —— 你想要的风格、长度和关注点"
   }
@@ -121,14 +126,14 @@ video-analyzer-tune --training-data training_data.json --output-dir tuned_prompt
 
 路径可以是绝对路径，也可以是相对于 `training_data.json` 所在位置的相对路径。
 
-### analysis.json 中需要编辑的内容
+### 需要编辑的文件
 
-| 字段 | 是否必填 | 描述 |
-|---|---|---|
-| `video_description.response` | 是 | 你理想的最终视频描述 |
-| `frame_analyses[i].response` | 推荐 | 每帧的理想帧笔记 |
-| `prompt` | 否 | 保持原样 |
-| `transcript` | 否 | 保持原样 |
+| 文件 | 字段 | 是否必填 | 描述 |
+|---|---|---|---|
+| `analysis.json` | `video_description.response` | 是 | 你理想的最终视频描述 |
+| `frame_analyses.json` | `[i].response` | 推荐 | 每帧的理想帧笔记 |
+| `analysis.json` | `prompt` | 否 | 保持原样 |
+| `transcript.json` | 全部 | 否 | 保持原样 |
 
 ## CLI 参考
 

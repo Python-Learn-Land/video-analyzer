@@ -69,14 +69,26 @@ def _load_example(output_dir: Path) -> TrainingExample:
 
     # Optional fields — missing or null is fine
     user_question = (data.get("prompt") or "").strip()
-    transcript_data = data.get("transcript") or {}
-    transcript = (transcript_data.get("text") or "").strip()
     video_path = data.get("video_path") or str(output_dir)
 
-    # Frame analyses
-    frame_analyses = data.get("frame_analyses") or []
+    # Transcript: load from transcript.json
+    transcript_file = output_dir / "transcript.json"
+    if transcript_file.exists():
+        with open(transcript_file, "r", encoding="utf-8") as f:
+            transcript_data = json.load(f)
+    else:
+        transcript_data = None
+    transcript = (transcript_data.get("text") or "").strip() if transcript_data else ""
+
+    # Frame analyses: load from frame_analyses.json
+    frame_analyses_file = output_dir / "frame_analyses.json"
+    if frame_analyses_file.exists():
+        with open(frame_analyses_file, "r", encoding="utf-8") as f:
+            frame_analyses = json.load(f)
+    else:
+        frame_analyses = []
     if not frame_analyses:
-        raise ValueError(f"No frame_analyses found in {analysis_file}")
+        raise ValueError(f"No frame_analyses found in {output_dir}")
 
     # Reconstruct frame image paths from the frames/ subdirectory
     frames_dir = output_dir / "frames"
