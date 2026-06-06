@@ -86,7 +86,10 @@ class Config:
                     self.config["audio"]["device"] = value
                 elif key == "temperature":
                     self.config["clients"]["temperature"] = value
-                elif key not in ["start_stage", "max_frames"]:  # Ignore these as they're command-line only
+                elif key == "keep_frames" and value is True:
+                    # Only override keep_frames when explicitly provided via CLI
+                    self.config["keep_frames"] = True
+                elif key not in ["start_stage", "max_frames", "keep_frames"]:
                     self.config[key] = value
 
     def save_user_config(self):
