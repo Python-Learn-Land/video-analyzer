@@ -1,30 +1,30 @@
-# Rules and Guidelines for AI Assistants and Agents
+# AI 助手与智能体的规则与指南
 
-### Code Structure and Organization
+### 代码结构与组织
 
-**Modularity**:
-* Keep files small and modular.
-* No file must exceed 400 lines of code**.
-* If a file becomes too large, refactor by breaking down classes or functions into smaller modules.
+**模块化**：
+* 保持文件小巧且模块化。
+* 任何文件不得超过 400 行代码**。
+* 如果文件过大，请通过将类或函数拆分为更小的模块来进行重构。
 
-**Component Management**:
+**组件管理**：
 
-* Split large components into smaller, manageable parts to enhance readability and maintainability.
+* 将大型组件拆分为更小、更易管理的部分，以提高可读性和可维护性。
 
-**Dependencies**:
+**依赖项**：
 
-* Limit the use of dependencies when possible.
+* 尽可能限制依赖项的使用。
 
-**Separation of Concerns**:
+**关注点分离**：
 
-* Move constants, configurations, and lengthy strings to separate files or configuration modules.
+* 将常量、配置和长字符串移至单独的文件或配置模块中。
 
-**Naming Conventions**:
+**命名规范**：
 
-* Use descriptive and meaningful names for files, functions, and variables to improve code clarity.
+* 使用具有描述性且意义明确的名称来命名文件、函数和变量，以提高代码清晰度。
 
-**Documentation**:
+**文档**：
 
-* Document all file dependencies.
-* Maintain a clean and organized project structure with clear directories and file hierarchies.
-* Ensure the readme.md, docs/DESIGN.md and docs/USAGES.md stay up to date
+* 记录所有文件依赖关系。
+* 保持项目结构整洁有序，目录和文件层次清晰。
+* 确保 readme.md、docs/DESIGN.md 和 docs/USAGES.md 保持最新
