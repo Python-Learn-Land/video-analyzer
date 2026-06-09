@@ -76,7 +76,7 @@ class AudioProcessor:
             ], check=True, capture_output=True)
 
             file_size = audio_path.stat().st_size / 1024  # KB
-            logger.info(f"Audio extracted successfully: {file_size:.1f} KB → {audio_path}")
+            logger.info(f"Audio extracted successfully: {file_size:.1f} KB → {audio_path.resolve()}")
             return audio_path
         except subprocess.CalledProcessError as e:
             error_output = e.stderr.decode()
@@ -93,7 +93,7 @@ class AudioProcessor:
                 video = AudioSegment.from_file(str(video_path))
                 audio = video.set_channels(1).set_frame_rate(16000)
                 audio.export(str(audio_path), format="wav")
-                logger.debug("Successfully extracted audio using pydub")
+                logger.debug(f"Successfully extracted audio using pydub: {audio_path.resolve()}")
                 return audio_path
             except Exception as e2:
                 logger.error(f"Error extracting audio using pydub: {e2}")
@@ -113,7 +113,7 @@ class AudioProcessor:
         if self.language and self.language not in accepted_languages:
             logger.warning(f"Invalid language code: {self.language}, will detect language automatically")
         try:
-            logger.info(f"Transcribing audio ({audio_path.stat().st_size / 1024:.1f} KB)...")
+            logger.info(f"Transcribing audio ({audio_path.resolve().stat().st_size / 1024:.1f} KB)...")
             # Initial transcription with VAD filtering
             segments, info = self.model.transcribe(
                 str(audio_path),

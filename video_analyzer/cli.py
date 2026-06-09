@@ -100,7 +100,7 @@ def main():
 
     # Initialize components
     video_path = Path(args.video_path)
-    output_dir = Path(config.get("output_dir")) / video_path.stem
+    output_dir = (Path(config.get("output_dir")) / video_path.stem).resolve()
     client = create_client(config)
     model = get_model(config)
     prompt_loader = PromptLoader(config.get("prompt_dir"), config.get("prompts", []))
