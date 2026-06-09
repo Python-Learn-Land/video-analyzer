@@ -49,8 +49,11 @@ class VideoProcessor:
 
     def extract_keyframes(self, frames_per_minute: int = 10, duration: Optional[float] = None, max_frames: Optional[int] = None) -> List[Frame]:
         """Extract keyframes from video targeting a specific number of frames per minute."""
+        # Use absolute path to avoid working directory issues
+        self.output_dir = self.output_dir.resolve()
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+        logger.info(f"Frames will be saved to: {self.output_dir}")
+
         cap = cv2.VideoCapture(str(self.video_path))
         if not cap.isOpened():
             raise ValueError(f"Could not open video file: {self.video_path}")
@@ -118,7 +121,12 @@ class VideoProcessor:
         logger.info(f"Saving {total_selected} selected frames to disk...")
         for idx, (frame_num, frame, score) in enumerate(selected_frames):
             frame_path = self.output_dir / f"frame_{idx}.jpg"
-            cv2.imwrite(str(frame_path), frame)
+            # Use cv2.imencode + Python file I/O to avoid OpenCV path encoding issues on Windows
+            success, encoded = cv2.imencode('.jpg', frame)
+            if not success:
+                raise RuntimeError(f"Failed to encode frame {idx} as JPEG")
+            with open(frame_path, 'wb') as f:
+                f.write(encoded.tobytes())
             timestamp = frame_num / fps
             self.frames.append(Frame(idx, frame_path, timestamp, score))
             if (idx + 1) % max(1, total_selected // 10) == 0 or idx == total_selected - 1:
